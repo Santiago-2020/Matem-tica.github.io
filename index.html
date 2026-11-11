@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Configuración básica del documento y compatibilidad con teléfonos. -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f7ff">
+    <meta name="description" content="Una aventura interactiva de diez niveles para aprender funciones y cálculo.">
+    <title>La ruta del saber | Aventura matemática</title>
+    <!-- El diseño y la lógica están en archivos separados para que puedas cambiarlos fácilmente. -->
+    <link rel="stylesheet" href="../CSS/styles.css">
+    <!-- defer espera a que el HTML esté listo antes de ejecutar el juego. -->
+    <script src="../JAVASCRIPT/curriculum.js" defer></script>
+    <script src="../JAVASCRIPT/Javascript.js" defer></script>
+</head>
+<body>
+    <!-- Contenedor general: incluye el encabezado y las tres vistas del juego. -->
+    <main class="app-shell">
+        <!-- Encabezado común a todas las vistas: nombre del juego, puntos y récord. -->
+        <header class="topbar">
+            <a class="brand" href="#" aria-label="La ruta del saber, inicio">
+                <span class="brand-mark" aria-hidden="true">∑</span>
+                <span>LA RUTA <strong>DEL SABER</strong></span>
+            </a>
+            <div class="topbar-stats" aria-label="Estadísticas de la partida">
+                <span class="stat-chip"><span aria-hidden="true">✦</span> <span id="score-display">0</span> pts</span>
+                <span class="stat-chip"><span aria-hidden="true">⭐</span> <span id="xp-display">0</span> XP</span>
+                <span class="stat-chip"><span aria-hidden="true">🏆</span> Récord <span id="best-display">0</span></span>
+            </div>
+        </header>
+
+        <!-- Pantalla del mapa: presentación de la aventura y tarjetas de niveles. -->
+        <section id="map-screen" class="screen map-screen" aria-labelledby="map-title">
+            <!-- Presentación principal. El dibujo del cristal se construye con CSS. -->
+            <div class="hero">
+                <div class="hero-copy">
+                    <p class="eyebrow"><span class="eyebrow-line"></span> AVENTURA DE MATEMÁTICA · 6.º DE BACHILLERATO</p>
+                    <h1 id="map-title">El conocimiento<br>es tu <span class="accent-text">poder.</span></h1>
+                    <p class="hero-description">Explora diez territorios, supera sus desafíos y recupera los fragmentos del cristal matemático.</p>
+                    <div class="hero-actions">
+                        <a class="primary-button hero-button" href="#level-list">Comenzar la aventura <span aria-hidden="true">→</span></a>
+                        <button class="secondary-button teacher-entry" id="owner-open" type="button">Ver todas las respuestas (PIN)</button>
+                    </div>
+                </div>
+                <div class="crystal-scene" aria-hidden="true">
+                    <div class="orbit orbit-one"></div>
+                    <div class="orbit orbit-two"></div>
+                    <div class="crystal">✦</div>
+                    <span class="math-float math-one">π</span>
+                    <span class="math-float math-two">√x</span>
+                    <span class="math-float math-three">∫</span>
+                    <span class="math-float math-four">∑</span>
+                </div>
+            </div>
+
+            <!-- JavaScript inserta las tarjetas de niveles dentro de level-grid. -->
+            <div class="section-heading" id="level-list">
+                <div>
+                    <p class="eyebrow">TU RECORRIDO</p>
+                    <h2>Elige tu próximo desafío</h2>
+                </div>
+                <p class="map-hint"><span class="status-dot"></span> <span id="progress-label">Nivel 1 disponible</span></p>
+            </div>
+
+            <div class="level-grid" id="level-grid" aria-label="Niveles de la aventura"></div>
+            <section class="pets-section" aria-labelledby="pets-title">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">TU EQUIPO DE AVENTURA</p>
+                        <h2 id="pets-title">Tus cuatro compañeros</h2>
+                    </div>
+                    <p class="map-hint">Te ayudan a aprender en cada desafío</p>
+                </div>
+                <div class="pets-grid" id="pets-grid" aria-label="Tus asistentes"></div>
+                <div class="map-greeting" aria-live="polite">
+                    <span class="greeting-portrait" id="map-guide-art" aria-hidden="true"></span>
+                    <p><strong id="map-guide-name">Poroto</strong><span id="map-guide-message"></span></p>
+                    <button class="assistant-button" id="companion-example" type="button">Ver ejemplo de interacción</button>
+                </div>
+            </section>
+            <section class="badges-section" aria-labelledby="badges-title">
+                <div class="section-heading">
+                    <div><p class="eyebrow">TU PROGRESO</p><h2 id="badges-title">MIS LOGROS</h2></div>
+                </div>
+                <div class="achievement-stats" id="achievement-stats" aria-live="polite"></div>
+                <h3 class="collection-heading">Insignias y medallas</h3>
+                <div class="badges-grid" id="badges-grid" aria-live="polite"></div>
+                <h3 class="collection-heading">Recompensas especiales</h3>
+                <div class="badges-grid" id="rewards-grid" aria-live="polite"></div>
+            </section>
+            <section class="public-rules" aria-labelledby="teacher-rules-title">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">CÓMO JUGAR</p>
+                        <h2 id="teacher-rules-title">Reglas del juego</h2>
+                    </div>
+                </div>
+                <ul class="teacher-rules">
+                    <li>La aventura tiene 10 niveles consecutivos. Al responder las tres preguntas y terminar un nivel, se desbloquea el siguiente; los errores no impiden avanzar.</li>
+                    <li>Cada nivel ofrece selección múltiple, verdadero o falso, completar una respuesta y una ronda exprés opcional. El contenido tiene dificultad media: combina comprensión, interpretación y cálculos de varios pasos.</li>
+                    <li>La ronda exprés tiene 90 segundos para responder las tres preguntas. Si se termina el tiempo, el nivel no se completa y puede volver a intentarse.</li>
+                    <li>Cada respuesta correcta suma 100 puntos y 10 XP. La primera vez que se completa un nivel se obtienen 50 XP y una insignia.</li>
+                    <li>La medalla depende de los errores: oro con 0, plata con 1 y bronce con 2 o más. Se puede mejorar al repetir el nivel.</li>
+                    <li>Pinchuskin ofrece hasta dos pistas por pregunta y, después de responder, explica el procedimiento. Media puede leer la consigna y las opciones en voz alta.</li>
+                    <li>En Continuidad, el puzzle agrega cuatro tareas gráficas: reconocer un salto, reparar un hueco, crear un salto y crear una discontinuidad evitable.</li>
+                    <li>Las recompensas especiales se ganan por rachas de 3 y 5 aciertos, 30 respuestas correctas, completar un nivel sin errores y terminar los 10 niveles.</li>
+                </ul>
+            </section>
+            <section class="owner-access" aria-labelledby="owner-access-title">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">ACCESO DOCENTE</p>
+                        <h2 id="owner-access-title">Respuestas de los desafíos</h2>
+                    </div>
+                </div>
+                <div class="owner-panel" id="owner-panel" hidden>
+                    <div class="owner-panel-heading">
+                        <div>
+                            <p class="eyebrow">SOLO PARA DOCENTE</p>
+                            <h3>Respuestas correctas y explicaciones</h3>
+                        </div>
+                        <button class="text-button" id="owner-lock" type="button">Cerrar y bloquear</button>
+                    </div>
+                    <section class="teacher-content" aria-labelledby="teacher-answers-title">
+                        <h3 id="teacher-answers-title">Respuestas de todos los desafíos</h3>
+                        <p class="teacher-intro">La respuesta correcta y su explicación se generan desde el mismo contenido que utiliza el juego.</p>
+                        <div class="teacher-answer-list" id="teacher-answer-list"></div>
+                    </section>
+                </div>
+            </section>
+            <p class="footer-note">Tu progreso y tu récord se guardan en este dispositivo.</p>
+        </section>
+
+        <section id="games-screen" class="screen games-screen" aria-labelledby="games-title" hidden>
+            <div class="game-toolbar">
+                <button class="text-button" id="games-to-map" type="button"><span aria-hidden="true">←</span> Volver al mapa</button>
+                <span class="level-tag" id="games-level-tag"></span>
+            </div>
+            <p class="eyebrow">ELIGE CÓMO JUGAR</p>
+            <h2 id="games-title">Desafíos del nivel</h2>
+            <p class="games-description">Cada juego practica los mismos temas de una forma diferente. La dificultad de los niveles es media.</p>
+            <article class="lesson-card" aria-labelledby="lesson-title">
+                <p class="eyebrow">ANTES DE EMPEZAR</p>
+                <h3 id="lesson-title"></h3>
+                <p id="lesson-intro"></p>
+                <p id="lesson-explanation"></p>
+            </article>
+            <div class="game-welcome" aria-live="polite">
+                <span class="greeting-portrait" id="games-guide-art" aria-hidden="true"></span>
+                <p><strong id="games-guide-name">Poroto</strong><span id="games-guide-message"></span></p>
+            </div>
+            <div class="games-grid" id="games-grid" aria-label="Juegos disponibles para este nivel"></div>
+        </section>
+
+        <section id="puzzle-screen" class="screen puzzle-screen" aria-labelledby="puzzle-title" hidden>
+            <div class="game-toolbar">
+                <button class="text-button" id="puzzle-to-games" type="button"><span aria-hidden="true">←</span> Volver a los juegos</button>
+                <span class="level-tag" id="puzzle-level-tag"></span>
+            </div>
+            <p class="eyebrow">MODO INTERACTIVO</p>
+            <h2 id="puzzle-title">Puzzle de Funciones: Continuidad y Discontinuidad</h2>
+            <p class="puzzle-intro">Explora la gráfica, mueve sus puntos y transforma la función para superar cuatro desafíos.</p>
+
+            <div class="puzzle-progress" aria-label="Progreso del puzzle">
+                <span id="puzzle-stage-label">Desafío 1 de 4</span>
+                <div class="progress-track" role="progressbar" aria-label="Progreso del puzzle" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="puzzle-progress-track">
+                    <span id="puzzle-progress-bar"></span>
+                </div>
+            </div>
+
+            <div class="puzzle-companion" aria-live="polite">
+                <span class="greeting-portrait" id="puzzle-guide-art" aria-hidden="true"></span>
+                <p><strong id="puzzle-guide-name"></strong><span id="puzzle-guide-message"></span></p>
+                <div class="puzzle-companion-actions">
+                    <button class="assistant-button" id="puzzle-hint" type="button">Pedir pista a Pinchuskin</button>
+                    <button class="assistant-button sock-button" id="puzzle-read" type="button">Escuchar a Media</button>
+                    <button class="assistant-button sock-button" id="puzzle-speech-pause" type="button" disabled>Pausar lectura</button>
+                    <label class="auto-read-toggle"><input id="puzzle-auto-read" type="checkbox"> Lectura automática</label>
+                </div>
+            </div>
+
+            <article class="puzzle-card">
+                <div class="puzzle-challenge">
+                    <div>
+                        <p class="eyebrow" id="puzzle-stage-topic"></p>
+                        <h3 id="puzzle-challenge-title"></h3>
+                    </div>
+                    <p id="puzzle-challenge-prompt"></p>
+                </div>
+
+                <div class="puzzle-tools" role="toolbar" aria-label="Herramientas para modificar la gráfica">
+                    <button class="puzzle-tool selected" type="button" data-puzzle-tool="move" aria-pressed="true">↔ Mover puntos</button>
+                    <button class="puzzle-tool" type="button" data-puzzle-tool="open" aria-pressed="false">○ Abrir hueco</button>
+                    <button class="puzzle-tool" type="button" data-puzzle-tool="closed" aria-pressed="false">● Añadir punto</button>
+                    <button class="puzzle-tool" type="button" data-puzzle-tool="jump" aria-pressed="false">⌁ Crear salto</button>
+                    <button class="puzzle-tool" type="button" data-puzzle-tool="remove" aria-pressed="false">− Quitar punto</button>
+                </div>
+                <p class="puzzle-tool-help" id="puzzle-tool-help" aria-live="polite">Arrastra un punto de la gráfica para moverlo. También puedes usar las flechas del teclado cuando el punto esté seleccionado.</p>
+
+                <div class="puzzle-chart-wrap">
+                    <svg class="puzzle-chart" id="puzzle-chart" viewBox="0 0 700 420" role="img" aria-labelledby="puzzle-chart-title puzzle-chart-description" tabindex="0">
+                        <title id="puzzle-chart-title">Gráfica cartesiana interactiva</title>
+                        <desc id="puzzle-chart-description">Usa las herramientas para modificar la gráfica. Los círculos abiertos indican puntos no incluidos y los llenos indican valores definidos.</desc>
+                    </svg>
+                </div>
+
+                <div class="puzzle-classification" id="puzzle-classification" hidden>
+                    <span>¿Cómo clasificarías esta gráfica?</span>
+                    <button class="puzzle-answer" type="button" data-puzzle-answer="continuous" aria-pressed="false">Continua</button>
+                    <button class="puzzle-answer" type="button" data-puzzle-answer="discontinuous" aria-pressed="false">Discontinua</button>
+                </div>
+                <p class="puzzle-feedback" id="puzzle-feedback" role="status" aria-live="polite">Selecciona una herramienta para empezar a explorar.</p>
+                <div class="puzzle-actions">
+                    <button class="secondary-button" id="puzzle-reset" type="button">Reiniciar gráfica</button>
+                    <button class="primary-button" id="puzzle-check" type="button">Comprobar gráfica</button>
+                    <button class="primary-button" id="puzzle-next" type="button" hidden>Siguiente desafío →</button>
+                </div>
+            </article>
+        </section>
+
+        <!-- Pantalla de preguntas: empieza oculta y JavaScript la muestra al jugar. -->
+        <section id="game-screen" class="screen game-screen" aria-labelledby="question-title" hidden>
+            <!-- Barra superior de la partida y nombre del nivel actual. -->
+            <div class="game-toolbar">
+                <button class="text-button" id="back-to-map" type="button"><span aria-hidden="true">←</span> Volver al mapa</button>
+                <span class="level-tag" id="game-level-tag"></span>
+                <span class="level-tag" id="xp-level-tag">⭐ <span id="game-xp">0</span> XP</span>
+                <span class="level-tag">Errores: <span id="mistakes-display">0</span></span>
+            </div>
+
+            <!-- Avance dentro del nivel: el texto y la barra se actualizan con cada respuesta. -->
+            <div class="game-progress">
+                <div class="progress-labels">
+                    <span id="question-count"></span>
+                    <span class="timer-chip" id="timer-chip" hidden>⏱ <span id="timer-display"></span></span>
+                    <span id="progress-percent"></span>
+                </div>
+                <div class="progress-track" role="progressbar" aria-label="Progreso del nivel" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-track">
+                    <span id="progress-bar"></span>
+                </div>
+            </div>
+
+            <!-- JavaScript escribe aquí el tema, la pregunta, las opciones y su explicación. -->
+            <article class="question-card">
+                <aside class="pet-assistant" id="pet-assistant" aria-label="Asistentes de aprendizaje">
+                    <div class="assistant-roster" id="assistant-roster"></div>
+                    <div class="assistant-dialog" id="assistant-dialog">
+                        <div class="assistant-copy">
+                            <strong id="assistant-greeting"></strong>
+                            <p id="assistant-message" role="status" aria-live="polite"></p>
+                        </div>
+                        <div class="assistant-actions">
+                            <button class="assistant-button" id="pet-action-button" type="button">Pedir pista a Pinchuskin</button>
+                            <button class="assistant-button sock-button" id="sock-action-button" type="button">Escuchar pregunta y opciones con Media</button>
+                            <button class="assistant-button sock-button" id="speech-pause" type="button" disabled>Pausar lectura</button>
+                            <label class="auto-read-toggle"><input id="auto-read" type="checkbox"> Lectura automática</label>
+                        </div>
+                    </div>
+                </aside>
+                <p class="eyebrow" id="question-topic"></p>
+                <h2 id="question-title" tabindex="-1"></h2>
+                <p class="game-instruction" id="game-instruction" hidden></p>
+                <div class="question-chart" id="question-chart" hidden>
+                    <svg id="question-chart-svg" viewBox="0 0 520 300" role="img"></svg>
+                    <p id="question-chart-caption"></p>
+                </div>
+                <div class="answer-list" id="answer-list"></div>
+                <div class="feedback" id="feedback" role="status" aria-live="polite" hidden>
+                    <div>
+                        <strong id="feedback-title"></strong>
+                        <p id="feedback-explanation"></p>
+                    </div>
+                    <button class="primary-button next-button" id="next-question" type="button">Continuar <span aria-hidden="true">→</span></button>
+                </div>
+            </article>
+        </section>
+
+        <!-- Pantalla de resultados: JavaScript cambia los textos según el nivel terminado. -->
+        <section id="result-screen" class="screen result-screen" aria-labelledby="result-title" hidden>
+            <div class="result-icon" aria-hidden="true" id="result-icon">✦</div>
+            <p class="eyebrow" id="result-eyebrow">NIVEL COMPLETADO</p>
+            <h2 id="result-title">¡Desafío superado!</h2>
+            <p class="result-description" id="result-description"></p>
+            <div class="result-score"><span id="level-score">0</span><small>puntos en este nivel</small></div>
+            <div class="result-crew" id="result-crew" aria-label="Tus compañeros celebran"></div>
+            <p class="result-companion-message" id="result-companion-message"></p>
+            <div class="reward-card" id="reward-card" hidden>
+                <span class="reward-icon" aria-hidden="true">🏅</span>
+                <div><strong id="reward-title"></strong><p id="reward-message"></p></div>
+            </div>
+            <!-- Los botones permiten avanzar, repetir el nivel o regresar al mapa. -->
+            <div class="result-actions">
+                <button class="primary-button" id="continue-adventure" type="button">Siguiente nivel <span aria-hidden="true">→</span></button>
+                <button class="secondary-button" id="replay-level" type="button">Repetir nivel</button>
+                <button class="text-button" id="result-to-map" type="button">Volver al mapa</button>
+            </div>
+        </section>
+
+        <dialog class="fairy-delivery-dialog" id="fairy-delivery-dialog" aria-labelledby="fairy-delivery-title" aria-describedby="fairy-delivery-message">
+            <div class="fairy-delivery-scene" id="fairy-delivery-scene" data-phase="ready" aria-hidden="true">
+                <div class="fairy-magic-particles" id="fairy-magic-particles"></div>
+                <div class="fairy-delivery-flash">✦</div>
+                <div class="fairy-delivery-medal" id="fairy-delivery-medal">
+                    <span id="fairy-delivery-icon">🏅</span>
+                </div>
+                <div class="fairy-delivery-character" id="fairy-delivery-character"></div>
+            </div>
+            <div class="fairy-delivery-copy" id="fairy-delivery-copy">
+                <p class="eyebrow">¡RECOMPENSA DESBLOQUEADA!</p>
+                <h2 id="fairy-delivery-title"></h2>
+                <p id="fairy-delivery-message">¡Felicidades! ¡Esta recompensa es tuya!</p>
+                <button class="primary-button" id="fairy-delivery-continue" type="button" disabled>Continuar</button>
+            </div>
+        </dialog>
+
+        <dialog class="owner-login" id="owner-login" aria-labelledby="owner-login-title">
+            <form id="owner-login-form">
+                <p class="eyebrow">ACCESO DOCENTE</p>
+                <h2 id="owner-login-title">Ingresa tu PIN</h2>
+                <label for="owner-pin">PIN de acceso</label>
+                <input id="owner-pin" name="pin" type="password" inputmode="numeric" autocomplete="off" required>
+                <p class="owner-login-error" id="owner-login-error" role="alert" hidden>PIN incorrecto. Inténtalo otra vez.</p>
+                <div class="owner-login-actions">
+                    <button class="text-button" id="owner-login-cancel" type="button">Cancelar</button>
+                    <button class="primary-button" type="submit">Ver reglas y respuestas</button>
+                </div>
+            </form>
+        </dialog>
+    </main>
+</body>
+</html>
